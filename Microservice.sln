@@ -21,7 +21,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MS.Services.ProductAPI", "M
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MS.Services.ShoppingCartAPI", "MS.Services.ShoppingCartAPI\MS.Services.ShoppingCartAPI.csproj", "{9612240E-7D81-488A-ABB5-72D53F06F0EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MS.MessageBus", "MS.MessageBus\MS.MessageBus.csproj", "{EB967A17-2244-485E-A5E8-E211BE5D1E0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MS.MessageBus", "MS.MessageBus\MS.MessageBus.csproj", "{EB967A17-2244-485E-A5E8-E211BE5D1E0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MS.Services.EmailAPI", "MS.Services.EmailAPI\MS.Services.EmailAPI.csproj", "{0E01AA7C-E290-4891-90F2-F8E3382CA83B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +55,10 @@ Global
 		{EB967A17-2244-485E-A5E8-E211BE5D1E0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB967A17-2244-485E-A5E8-E211BE5D1E0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB967A17-2244-485E-A5E8-E211BE5D1E0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E01AA7C-E290-4891-90F2-F8E3382CA83B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E01AA7C-E290-4891-90F2-F8E3382CA83B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E01AA7C-E290-4891-90F2-F8E3382CA83B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E01AA7C-E290-4891-90F2-F8E3382CA83B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -64,6 +70,7 @@ Global
 		{4BEBFBA3-E415-4A54-A0C2-5B667443220B} = {7C03672D-84F3-47BD-A316-10CCCC285380}
 		{9612240E-7D81-488A-ABB5-72D53F06F0EC} = {7C03672D-84F3-47BD-A316-10CCCC285380}
 		{EB967A17-2244-485E-A5E8-E211BE5D1E0D} = {05F19E94-E3E5-41BB-9C43-2EE51A25F147}
+		{0E01AA7C-E290-4891-90F2-F8E3382CA83B} = {7C03672D-84F3-47BD-A316-10CCCC285380}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C04B247B-F7FE-4350-BD7B-41614ED0A74B}

@@ -94,12 +94,13 @@ namespace MS.Services.ShoppingCartAPI.Controllers
             return _response;
         }
 
+        // Send message to the Azure service bus queue
         [HttpPost("emailshoppingcart")]
         public async Task<object> EmailShoppingCart([FromBody] CartDto cartDto)
         {
             try
             {
-                await _messageBus.PublishMessage(cartDto, _configuration.GetValue<string>("TopicAndQueueNames:EmailShoppingCart"));
+                await _messageBus.PublishMessage(cartDto, _configuration.GetValue<string>("TopicAndQueueNames:EmailShoppingCartQueue"));
                 _response.Result = true;
             }
             catch (Exception ex)

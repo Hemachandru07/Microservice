@@ -7,7 +7,7 @@ namespace MS.MessageBus
 {
     public class MessageBus : IMessageBus
     {
-        private readonly string _connectionString = "Endpoint=sb://sbns-msweb.servicebus.windows.net/;SharedAccessKeyName=SharedAccessKey;SharedAccessKey=nYJJ6IOrbdBOfz5ROMAFtfeMabGLJdpCO+ASbO+WF44=;EntityPath=emailshoppingcart";
+        private readonly string _connectionString = "Endpoint=sb://sbns-msweb.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=YNCFmvaXZdzxAqzlHxDSOyJe1o+Bkgieq+ASbEpffSs=";
         public async Task PublishMessage(object message, string topic_queue_Name)
         {
             await using var client = new ServiceBusClient(_connectionString);

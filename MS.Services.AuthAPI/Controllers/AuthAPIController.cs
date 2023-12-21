@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using MS.MessageBus;
 using MS.Services.AuthAPI.Models.Dto;
 using MS.Services.AuthAPI.Service.IService;
 
@@ -11,11 +13,15 @@ namespace MS.Services.AuthAPI.Controllers
     {
         private readonly IAuthService _authService;
         protected ResponseDto _response;
+        private readonly IConfiguration _configuration;
+        private readonly IMessageBus _messageBus;
 
-        public AuthAPIController(IAuthService authService)
+        public AuthAPIController(IAuthService authService, IMessageBus messageBus, IConfiguration configuration)
         {
             _authService = authService;
             _response = new();
+            _configuration = configuration;
+            _messageBus = messageBus;
         }
 
         [HttpPost("register")]
@@ -28,6 +34,7 @@ namespace MS.Services.AuthAPI.Controllers
                 _response.Message = errorMessage;
                 return BadRequest(_response);
             }
+            await _messageBus.PublishMessage(registrationRequest.Email, _configuration.GetValue<string>("TopicAndQueueNames:RegisterUserQueue"));
             return Ok(_response);
         }
 
