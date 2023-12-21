@@ -1,0 +1,6 @@
+@MS.Services.CouponAPI_HostAddress = http://localhost:5043
+
+GET {{MS.Services.CouponAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

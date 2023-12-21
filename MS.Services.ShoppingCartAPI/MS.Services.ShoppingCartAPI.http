@@ -1,0 +1,6 @@
+@MS.Services.ShoppingCartAPI_HostAddress = http://localhost:5243
+
+GET {{MS.Services.ShoppingCartAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
