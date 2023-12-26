@@ -1,4 +1,6 @@
-﻿namespace MS.Services.ShoppingCartAPI.Models.Dto
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MS.Services.OrderAPI.Models.Dto
 {
     public class CartHeaderDto
 
