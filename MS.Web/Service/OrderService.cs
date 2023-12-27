@@ -21,5 +21,25 @@ namespace MS.Web.Service
                 Url = StaticDetails.OrderAPIBase + "/api/order/createorder"
             });
         }
+
+        public async Task<ResponseDto?> CreateStripeSession(StripeRequestDto stripeRequestDto)
+        {
+            return await _baseService.SendAsync(new RequestDto
+            {
+                ApiType = StaticDetails.ApiType.POST,
+                Data = stripeRequestDto,
+                Url = StaticDetails.OrderAPIBase + "/api/order/createstripesession"
+            });
+        }
+
+        public async Task<ResponseDto?> ValidateStripeSession(int orderHeaderId)
+        {
+            return await _baseService.SendAsync(new RequestDto
+            {
+                ApiType = StaticDetails.ApiType.POST,
+                Data = orderHeaderId,
+                Url = StaticDetails.OrderAPIBase + "/api/order/validatestripesession"
+            });
+        }
     }
 }

@@ -1,6 +1,6 @@
-﻿using MS.Services.EmailAPI.Messaging;
+﻿using MS.Services.RewardAPI.Messaging;
 
-namespace MS.Services.EmailAPI.Extension
+namespace MS.Services.RewardAPI.Extension
 {
     public static class ApplicationBuilderExtensions
     {

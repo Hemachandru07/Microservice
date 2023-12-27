@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using MS.Services.CouponAPI;
 using MS.Services.CouponAPI.Data;
 using MS.Services.CouponAPI.Extensions;
+using Stripe;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -62,6 +63,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Stripe Secret key
+StripeConfiguration.ApiKey = builder.Configuration.GetValue<string>("Stripe:SecretKey");
+
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

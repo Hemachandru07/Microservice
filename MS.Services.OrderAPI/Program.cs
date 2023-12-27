@@ -6,10 +6,11 @@ using MS.MessageBus;
 using MS.Services.OrderAPI;
 using MS.Services.OrderAPI.Data;
 using MS.Services.OrderAPI.Extensions;
-using MS.Services.OrderAPI.Service;
 using MS.Services.OrderAPI.Service.IService;
 using MS.Services.OrderAPI.Utility;
+using Stripe;
 using System.Text;
+using ProductService = MS.Services.OrderAPI.Service.ProductService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,6 +72,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Stripe Secret key
+StripeConfiguration.ApiKey = builder.Configuration.GetValue<string>("Stripe:SecretKey");
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

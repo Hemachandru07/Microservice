@@ -59,7 +59,7 @@ namespace MS.Web.Service
                     case HttpStatusCode.InternalServerError:
                         return new() { IsSuccess = false, Message = "Internal Server Error" };
                     case HttpStatusCode.BadRequest:
-                        return new() { IsSuccess = false, Message = apiResponse.ToString() };
+                        return new() { IsSuccess = false, Message = "Bad Request" };
                     default:
                         var apiContent = await apiResponse.Content.ReadAsStringAsync();
                         var apiResponseDto = JsonConvert.DeserializeObject<ResponseDto>(apiContent);

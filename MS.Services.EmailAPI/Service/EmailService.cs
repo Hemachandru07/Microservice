@@ -1,6 +1,7 @@
 ﻿using Azure.Messaging.ServiceBus.Administration;
 using Microsoft.EntityFrameworkCore;
 using MS.Services.EmailAPI.Data;
+using MS.Services.EmailAPI.Message;
 using MS.Services.EmailAPI.Models;
 using MS.Services.EmailAPI.Models.Dto;
 using System.Text;
@@ -33,6 +34,12 @@ namespace MS.Services.EmailAPI.Service
             message.Append("</ul>");
 
             await LogAndEmail(message.ToString(), cartDto.CartHeader.Email);
+        }
+
+        public async Task LogOrderPlaced(RewardsMessage rewardsMessage)
+        {
+            string message = "New Order placed. <br/> Order Id : " + rewardsMessage.OrderId;
+            await LogAndEmail(message, "microserviceapp@gmail.com");
         }
 
         public async Task RegisterEmailAndLog(string email)

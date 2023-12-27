@@ -1,0 +1,6 @@
+@MS.Services.RewardAPI_HostAddress = http://localhost:5110
+
+GET {{MS.Services.RewardAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

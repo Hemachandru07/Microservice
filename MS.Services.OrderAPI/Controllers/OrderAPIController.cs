@@ -6,6 +6,9 @@ using MS.Services.OrderAPI.Data;
 using Microsoft.AspNetCore.Authorization;
 using MS.Services.OrderAPI.Models;
 using MS.Services.OrderAPI.Utility;
+using Stripe;
+using Stripe.Checkout;
+using MS.MessageBus;
 
 namespace MS.Services.OrderAPI.Controllers
 {
@@ -18,13 +21,17 @@ namespace MS.Services.OrderAPI.Controllers
         private readonly AppDbContext _db;
         private IMapper _mapper;
         private readonly IProductService _productService;
+        private readonly IMessageBus _messageBus;
+        private readonly IConfiguration _configuration;
 
-        public OrderAPIController(AppDbContext db, IMapper mapper, IProductService productService)
+        public OrderAPIController(AppDbContext db, IMapper mapper, IProductService productService, IMessageBus messageBus, IConfiguration configuration)
         {
             _db = db;
             _mapper = mapper;
             _response = new ResponseDto();
             _productService = productService;
+            _messageBus = messageBus;
+            _configuration = configuration;
         }
 
         [HttpPost("createorder")]
@@ -44,6 +51,108 @@ namespace MS.Services.OrderAPI.Controllers
                 _response.Result = orderHeaderDto;
             }
             catch(Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
+        }
+
+        [Authorize]
+        [HttpPost("createstripesession")]
+        public async Task<ResponseDto> CreateStripeSession([FromBody]StripeRequestDto stripeRequestDto)
+        {
+            try
+            {
+                var options = new Stripe.Checkout.SessionCreateOptions
+                {
+                    SuccessUrl = stripeRequestDto.ApprovedUrl,
+                    CancelUrl = stripeRequestDto.CancelUrl,
+                    LineItems = new List<SessionLineItemOptions>(),
+                    Mode = "payment"
+                };
+                
+                var discountsObj = new List<SessionDiscountOptions>()
+                {
+                    new SessionDiscountOptions()
+                    {
+                        Coupon = stripeRequestDto.OrderHeader.CouponCode
+                    }
+                };
+
+                foreach(var item in stripeRequestDto.OrderHeader.OrderDetails)
+                {
+                    var sessionLineItem = new SessionLineItemOptions
+                    {
+                        PriceData = new SessionLineItemPriceDataOptions()
+                        {
+                            UnitAmount = (long)(item.Price * 100),
+                            Currency = "usd",
+                            ProductData = new SessionLineItemPriceDataProductDataOptions()
+                            {
+                                Name = item.Product.Name
+                            }
+                        },
+                        Quantity = item.Count
+                    };
+
+                    options.LineItems.Add(sessionLineItem);
+                }
+
+                if (stripeRequestDto.OrderHeader.Discount > 0)
+                {
+                    options.Discounts = discountsObj;
+                }
+
+                var service = new SessionService();
+                Session session = service.Create(options);
+
+                stripeRequestDto.StripeSessionUrl = session.Url;
+                OrderHeader orderHeader = _db.OrderHeaders.First(x => x.OrderHeaderId == stripeRequestDto.OrderHeader.OrderHeaderId);
+                orderHeader.StripeSessionId = session.Id;
+                await _db.SaveChangesAsync();
+                _response.Result = stripeRequestDto;
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
+        }
+
+        [Authorize]
+        [HttpPost("validatestripesession")]
+        public async Task<ResponseDto> ValidateStripeSession([FromBody] int orderHeaderId)
+        {
+            try
+            {
+                OrderHeader orderHeader = _db.OrderHeaders.First(x => x.OrderHeaderId == orderHeaderId);
+
+                var service = new SessionService();
+                Session session = await service.GetAsync(orderHeader.StripeSessionId);
+
+                var paymentIntentService = new PaymentIntentService();
+                PaymentIntent paymentIntent = await paymentIntentService.GetAsync(session.PaymentIntentId);
+
+                if(paymentIntent.Status == "succeeded")
+                {
+                    // then payment is successful
+                    orderHeader.PaymentIntentId = paymentIntent.Id;
+                    orderHeader.Status = StaticDetails.Status_Approved;
+                    await _db.SaveChangesAsync();
+                    RewardsDto rewardsDto = new()
+                    {
+                        OrderId = orderHeader.OrderHeaderId,
+                        RewardsActivity = Convert.ToInt32(orderHeader.OrderTotal),
+                        UserId = orderHeader.UserId
+                    };
+                    string topicName = _configuration.GetValue<string>("TopicAndQueueNames:OrderCreatedTopic");
+                    await _messageBus.PublishMessage(rewardsDto, topicName);
+                    _response.Result = _mapper.Map<OrderHeaderDto>(orderHeader);
+                }
+            }
+            catch (Exception ex)
             {
                 _response.IsSuccess = false;
                 _response.Message = ex.Message;
