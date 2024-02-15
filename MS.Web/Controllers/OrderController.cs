@@ -1,4 +1,5 @@
 ﻿using IdentityModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MS.Web.Models;
 using MS.Web.Service.IService;
@@ -17,12 +18,14 @@ namespace MS.Web.Controllers
         {
             _orderService = orderService;
         }
+        [Authorize]
         public IActionResult OrderIndex()
         {
             return View();
             
         }
 
+        [Authorize]
         public async Task<IActionResult> OrderDetail(int orderId)
         {
             OrderHeaderDto orderHeaderDto = new();
